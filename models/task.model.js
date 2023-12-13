@@ -12,9 +12,9 @@ const Task = new mongoose.Schema({
         default: false
     },
     user_id: {
-        type: mongoose.Types.ObjectId,
+        type: id,
         ref: "User"
     }
 });
 
-module.exports = mongoose.model('Task', Task);
+module.exports = mongoose.model('Task', );

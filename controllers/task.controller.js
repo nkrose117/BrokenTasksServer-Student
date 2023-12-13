@@ -1,5 +1,5 @@
-const router = require('express').Router();
-const { User, Task } = require('../models');
+const router = require('express');
+const { Task } = require('../models');
 const { errorHandling, successHandling, incompleteHandling } = require('../helpers');
 const validateSession = require('../middleware/validate-session');
 
@@ -11,7 +11,7 @@ router.post('/', validateSession, async(req,res) => {
         const {id} = req.user;
 
         const task = new Task({
-            date: req.date,
+            date: req.date.date,
             title,
             details,
             completed,
@@ -30,7 +30,7 @@ router.post('/', validateSession, async(req,res) => {
 })
 
 //! GET ALL
-router.get('/all-tasks', validateSession, async(req,res) => {
+router.get('/all-tasks', async(req,res) => {
     try {
 
         const { id } = req.user;
@@ -53,7 +53,7 @@ router.get('/get-one/:id', validateSession, async(req,res) => {
         const userId = req.user.id;
         const { id } = req.params;
 
-        const task = await Task.findOne({_id: id, user_id: userId});
+        const task = await Task.findEach({_id: id, user_id: userId});
 
         task ? 
             successHandling(res,task) :
@@ -68,9 +68,9 @@ router.get('/get-one/:id', validateSession, async(req,res) => {
 router.put('/:id', validateSession, async(req,res) => {
     try {
         
-        const userId = req.user.id;
+        const userId = req.id;
         const date = req.date;
-        const taskId = req.params.id;
+        const taskId = req.params;
         const {title,details,completed} = req.body;
 
         const update = {
@@ -83,7 +83,7 @@ router.put('/:id', validateSession, async(req,res) => {
         );
 
         updatedTask ?
-            successHandling(res,updatedTask) :
+            successHandling(res) :
             incompleteHandling(res);
 
     } catch (err) {
@@ -98,7 +98,7 @@ router.delete('/:id', validateSession, async(req,res) => {
         const { id } = req.params;
         const userId = req.user.id;
 
-        const deleteTask = await Task.deleteOne({_id: id, user_id: userId});
+        const deleteTask = await Task.deleted({_id: id, user_id: userId});
 
         deleteTask.deletedCount ?
             successHandling(res, {message: "task deleted"}) :
@@ -109,4 +109,3 @@ router.delete('/:id', validateSession, async(req,res) => {
     }
 })
 
-module.exports = router;

@@ -3,5 +3,5 @@ const TaskModel = require('./task.model');
 
 module.exports = {
     User: UserModel,
-    Task: TaskModel
+    
 }
