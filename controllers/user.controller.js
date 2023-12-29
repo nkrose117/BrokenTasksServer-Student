@@ -1,5 +1,5 @@
-const router = require('express').Router();
-const bcrypt = require('bcrypts');
+const router = require('express').Router(); //! added ()
+const bcrypt = require('bcrypt'); //! removed extra s.
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT;
 const expiresIn = {expiresIn: "1 day"};
