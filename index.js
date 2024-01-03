@@ -9,6 +9,7 @@ const { userController,taskController } = require('./controllers');
 const { setDate } = require('./middleware/date');
 
 //! Middleware
+app.use(express.static(`${__dirname}/middleware`)); //! added line?
 app.use(express.json()); //! added ().
 app.use(setDate);
 

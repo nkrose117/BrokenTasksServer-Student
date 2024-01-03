@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+const User = require('../models/user.model'); //! added this line
 
 const validateSession = async (req,res,next) => { //! added res.
     try {
@@ -7,12 +7,12 @@ const validateSession = async (req,res,next) => { //! added res.
         const token = req.headers.authorization;
         const decoded = await jwt.verify(token, process.env.JWT); //! added .verify
 
-        const user = await user.findById(decoded.id); //! changed User to user.
+        const user = await User.findById(decoded.id); 
         if(!user) throw new Error(`User not found`);
 
         // req.user;
         req.user = user; //! added "= user";
-        next(); //! added next();
+        return next(); //! added line
 
     } catch (err) {
         res.json({message: err.message})
