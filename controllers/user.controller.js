@@ -1,5 +1,5 @@
-const router = require('express').Router(); //! added ()
-const bcrypt = require('bcrypt'); //! removed extra s.
+const router = require('express').Router();
+const bcrypt = require('bcrypt'); //! removed s
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT;
 const expiresIn = {expiresIn: "1 day"};
@@ -7,20 +7,20 @@ const { User } = require('../models');
 const { errorHandling, successHandling, incompleteHandling } = require('../helpers');
 
 //! Signup
-router.post('/signup', async() => {
+router.post('/signup', async(req,res) => { //! added req,res to ()
     try {
 
         const { email, password } = req.body;
         
-        const user = User({
-            email,
+        const user = new User({ //! add "await" new User?
+            email, //! added req.body.email ?
             password: bcrypt.hashSync(password,13)   
         }).save();
-
+        
         let token;
 
         if(user) {
-            token = jwt.signs({id: user._id}, SECRET, expiresIn);
+            token = jwt.sign({id: user._id}, SECRET, expiresIn); //! changed signs to sign
         };
 
         const results = {
@@ -39,6 +39,7 @@ router.post('/signup', async() => {
 
 //! Login
 router.post('/login', async(req,res) => {
+    console.log('password');
     try {
         
         const { email, password } = req.body;
@@ -48,7 +49,7 @@ router.post('/login', async(req,res) => {
         let token;
 
         if(user) {
-            const match = await bcrypt.compare(password, password);
+            const match = await bcrypt.compare(password, user.password); //! added user.
 
             if(!match) throw new Error(`Email or Password do not match`);
 

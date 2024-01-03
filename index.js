@@ -1,15 +1,15 @@
-require('dotenv').config() //! added.config() ?
-const express = require('express'); // added .Router
+require('dotenv').config(); //!added .config()
+const express = require('express'); 
 const app = express();
 const PORT = process.env.PORT;
 
 //! Imports
-const db = require('./db');
-const { userController,taskController } = require('./controllers'); //! + user.controller?
-const { setDate } = require('./middleware/date'); //! validate-session?
+const {db, mongoose} = require('./db'); //! added { ,mongoose}
+const { userController,taskController } = require('./controllers');
+const { setDate } = require('./middleware/date');
 
 //! Middleware
-app.use(express.json); //! added ()
+app.use(express.json()); //! added ().
 app.use(setDate);
 
 //! Controllers
@@ -18,9 +18,12 @@ app.use('/task', taskController);
 
 //! Connection
 const server = async () => {
-   await db(); //! added await.
+    db();
 
     app.listen(PORT, () => console.log(`Server on Port ${PORT}`));
 }
 
 server();
+
+
+

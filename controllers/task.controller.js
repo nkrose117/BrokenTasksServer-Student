@@ -1,17 +1,17 @@
-const router = require('express').Router(); //! added .Router
-const { Task } = require('../models/task.model'); //! added task.model
+const router = require('express').Router(); //! added .Router()
+const { Task } = require('../models');
 const { errorHandling, successHandling, incompleteHandling } = require('../helpers');
 const validateSession = require('../middleware/validate-session');
 
 //! CREATE
-router.post('/:validateSession', async(req,res) => { //! removed space and moved ( ' ).
+router.post('/', validateSession, async(req,res) => {
     try {
         
         const { title, details, completed } = req.body;
         const {id} = req.user;
 
         const task = new Task({
-            date: req.date.date,
+            date: req.date, //! removed second .date
             title,
             details,
             completed,
@@ -68,9 +68,9 @@ router.get('/get-one/:id', validateSession, async(req,res) => {
 router.put('/:id', validateSession, async(req,res) => {
     try {
         
-        const userId = req.id;
+        const userId = req.user.id; //! added user
         const date = req.date;
-        const taskId = req.params;
+        const taskId = req.params.id; //! added .id
         const {title,details,completed} = req.body;
 
         const update = {
@@ -98,7 +98,7 @@ router.delete('/:id', validateSession, async(req,res) => {
         const { id } = req.params;
         const userId = req.user.id;
 
-        const deleteTask = await Task.deleted({_id: id, user_id: userId});
+        const deleteTask = await Task.deleteOne({_id: id, user_id: userId}); //! changed deleted to deleteOne
 
         deleteTask.deletedCount ?
             successHandling(res, {message: "task deleted"}) :
@@ -109,3 +109,4 @@ router.delete('/:id', validateSession, async(req,res) => {
     }
 })
 
+module.exports = router; //! added this line

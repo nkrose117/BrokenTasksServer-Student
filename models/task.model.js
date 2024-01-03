@@ -12,7 +12,7 @@ const Task = new mongoose.Schema({
         default: false
     },
     user_id: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Types.ObjectId, //! does Schema need to be added?
         ref: "User"
     }
 });
